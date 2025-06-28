@@ -22,16 +22,22 @@ export default function Home() {
     const video = videoRef.current
     if (!video) return
 
+    const tryPlay = async () => {
+      try {
+        await video.play()
+        setIsPaused(false)
+      } catch {
+        setIsPaused(true)
+      }
+    }
+
+    tryPlay()
+
     const handlePlay = () => setIsPaused(false)
     const handlePause = () => setIsPaused(true)
 
     video.addEventListener('play', handlePlay)
     video.addEventListener('pause', handlePause)
-
-    // Set initial state if autoplay fails
-    setTimeout(() => {
-      if (video.paused) setIsPaused(true)
-    }, 1000)
 
     return () => {
       video.removeEventListener('play', handlePlay)
@@ -40,7 +46,9 @@ export default function Home() {
   }, [])
 
   const handleManualPlay = () => {
-    videoRef.current?.play()
+    const video = videoRef.current
+    if (!video) return
+    video.play().catch(() => setIsPaused(true))
   }
 
   const buttons = [
@@ -59,7 +67,6 @@ export default function Home() {
       </Head>
 
       <main className="relative w-full min-h-[100lvh] font-mono overflow-x-hidden">
-        {/* 🔴 Fullscreen Background Video */}
         <video
           ref={videoRef}
           autoPlay
@@ -72,7 +79,6 @@ export default function Home() {
           <source src="/DEMO2768.mp4" type="video/mp4" />
         </video>
 
-        {/* 🔴 Play Button if Autoplay Blocked */}
         {isPaused && (
           <button
             onClick={handleManualPlay}
@@ -82,9 +88,7 @@ export default function Home() {
           </button>
         )}
 
-        {/* 🔴 Foreground Scrollable Content */}
         <div className="relative z-10 flex flex-col items-center justify-center px-6 py-16 min-h-[100lvh] space-y-4">
-          {/* MUSIC BUTTON + DROPDOWN */}
           <div className="w-full max-w-xs">
             <button
               onClick={toggleDropdown}
@@ -121,7 +125,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* OTHER BUTTONS */}
           {buttons.map((btn) => (
             <a
               key={btn.label}
