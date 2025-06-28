@@ -28,7 +28,7 @@ export default function Home() {
     video.addEventListener('play', handlePlay)
     video.addEventListener('pause', handlePause)
 
-    // Set initial pause state if autoplay fails
+    // Set initial state if autoplay fails
     setTimeout(() => {
       if (video.paused) setIsPaused(true)
     }, 1000)
@@ -44,22 +44,10 @@ export default function Home() {
   }
 
   const buttons = [
-    {
-      label: 'VIDEOS',
-      href: 'https://www.youtube.com/@julianmunyard4802',
-    },
-    {
-      label: 'MUNYARD MIXER',
-      href: 'https://munyard-mixer-git-main-julianmunyards-projects.vercel.app/',
-    },
-    {
-      label: 'VIDEO VULTURE',
-      href: 'https://video-vulture-git-main-julianmunyards-projects.vercel.app/',
-    },
-    {
-      label: 'TEXTURE ADDER',
-      href: 'https://texture-adder-next-mvd6.vercel.app/',
-    },
+    { label: 'VIDEOS', href: 'https://www.youtube.com/@julianmunyard4802' },
+    { label: 'MUNYARD MIXER', href: 'https://munyard-mixer-git-main-julianmunyards-projects.vercel.app/' },
+    { label: 'VIDEO VULTURE', href: 'https://video-vulture-git-main-julianmunyards-projects.vercel.app/' },
+    { label: 'TEXTURE ADDER', href: 'https://texture-adder-next-mvd6.vercel.app/' },
   ]
 
   return (
@@ -84,11 +72,11 @@ export default function Home() {
           <source src="/DEMO2768.mp4" type="video/mp4" />
         </video>
 
-        {/* 🔴 Custom Play Button (for Low Power Mode) */}
+        {/* 🔴 Play Button if Autoplay Blocked */}
         {isPaused && (
           <button
             onClick={handleManualPlay}
-            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-20 bg-red-300 text-white px-5 py-3 rounded-full text-lg font-bold shadow-lg backdrop-blur-md hover:scale-105 transition"
+            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-20 bg-red-600 text-white px-5 py-3 rounded-full text-lg font-bold shadow-md backdrop-blur-sm hover:scale-105 transition"
           >
             ▶ PLAY
           </button>
