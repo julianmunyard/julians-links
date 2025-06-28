@@ -74,6 +74,9 @@ export default function Home() {
           muted
           playsInline
           preload="auto"
+          controls={false}
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
           className="fixed inset-0 w-full h-full object-cover z-0"
         >
           <source src="/DEMO2768.mp4" type="video/mp4" />
