@@ -7,6 +7,8 @@ export default function Home() {
   const [showMusicDropdown, setShowMusicDropdown] = useState(false)
   const [dropdownHeight, setDropdownHeight] = useState(0)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [showPlayButton, setShowPlayButton] = useState(false)
 
   const toggleDropdown = () => setShowMusicDropdown(!showMusicDropdown)
 
@@ -15,6 +17,23 @@ export default function Home() {
       setDropdownHeight(showMusicDropdown ? dropdownRef.current.scrollHeight : 0)
     }
   }, [showMusicDropdown])
+
+  useEffect(() => {
+    const attemptAutoplay = async () => {
+      try {
+        await videoRef.current?.play()
+        setShowPlayButton(false)
+      } catch (err) {
+        setShowPlayButton(true)
+      }
+    }
+    attemptAutoplay()
+  }, [])
+
+  const handleManualPlay = () => {
+    videoRef.current?.play()
+    setShowPlayButton(false)
+  }
 
   const buttons = [
     {
@@ -46,15 +65,25 @@ export default function Home() {
       <main className="relative w-full min-h-[100lvh] font-mono overflow-x-hidden">
         {/* 🔴 Fullscreen Background Video */}
         <video
+          ref={videoRef}
+          preload="auto"
           autoPlay
           loop
           muted
           playsInline
-          preload="auto"
+          src="/DEMO2768.mp4"
           className="fixed inset-0 w-full h-full object-cover z-0"
-        >
-          <source src="/DEMO2768.mp4" type="video/mp4" />
-        </video>
+        />
+
+        {/* 🔴 Manual Play Button (if autoplay blocked) */}
+        {showPlayButton && (
+          <button
+            onClick={handleManualPlay}
+            className="fixed bottom-4 z-20 px-6 py-3 bg-red-600 text-[#fdf5e6] rounded-full font-bold shadow-xl animate-bounce"
+          >
+            ▶ Play Background
+          </button>
+        )}
 
         {/* 🔴 Foreground Scrollable Content */}
         <div className="relative z-10 flex flex-col items-center justify-center px-6 py-16 min-h-[100lvh] space-y-4">
