@@ -56,14 +56,6 @@ export default function Home() {
 
         {/* 🔴 Foreground Scrollable Content */}
         <div className="relative z-10 flex flex-col items-center justify-center px-6 py-16 min-h-[100lvh] space-y-4">
-          {/* 🔴 JM LINKS LOGO */}
-          <img
-            src="/jm-logo.png"
-            alt="JM Links Logo"
-            className="w-48 h-auto mb-6 pointer-events-none select-none border-none outline-none bg-transparent"
-            style={{ imageRendering: 'pixelated' }}
-          />
-
           {/* MUSIC BUTTON + DROPDOWN */}
           <div className="w-full max-w-xs">
             <button
