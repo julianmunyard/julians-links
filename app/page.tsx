@@ -50,9 +50,11 @@ export default function Home() {
           loop
           muted
           playsInline
-          src="/DEMO2768.mp4"
+          preload="auto"
           className="fixed inset-0 w-full h-full object-cover z-0"
-        />
+        >
+          <source src="/DEMO2768.mp4" type="video/mp4" />
+        </video>
 
         {/* 🔴 Foreground Scrollable Content */}
         <div className="relative z-10 flex flex-col items-center justify-center px-6 py-16 min-h-[100lvh] space-y-4">
