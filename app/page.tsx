@@ -6,9 +6,9 @@ import Head from 'next/head'
 export default function Home() {
   const [showMusicDropdown, setShowMusicDropdown] = useState(false)
   const [dropdownHeight, setDropdownHeight] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [showPlayButton, setShowPlayButton] = useState(false)
 
   const toggleDropdown = () => setShowMusicDropdown(!showMusicDropdown)
 
@@ -19,20 +19,28 @@ export default function Home() {
   }, [showMusicDropdown])
 
   useEffect(() => {
-    const attemptAutoplay = async () => {
-      try {
-        await videoRef.current?.play()
-        setShowPlayButton(false)
-      } catch (err) {
-        setShowPlayButton(true)
-      }
+    const video = videoRef.current
+    if (!video) return
+
+    const handlePlay = () => setIsPaused(false)
+    const handlePause = () => setIsPaused(true)
+
+    video.addEventListener('play', handlePlay)
+    video.addEventListener('pause', handlePause)
+
+    // Set initial pause state if autoplay fails
+    setTimeout(() => {
+      if (video.paused) setIsPaused(true)
+    }, 1000)
+
+    return () => {
+      video.removeEventListener('play', handlePlay)
+      video.removeEventListener('pause', handlePause)
     }
-    attemptAutoplay()
   }, [])
 
   const handleManualPlay = () => {
     videoRef.current?.play()
-    setShowPlayButton(false)
   }
 
   const buttons = [
@@ -66,22 +74,23 @@ export default function Home() {
         {/* 🔴 Fullscreen Background Video */}
         <video
           ref={videoRef}
-          preload="auto"
           autoPlay
           loop
           muted
           playsInline
-          src="/DEMO2768.mp4"
+          preload="auto"
           className="fixed inset-0 w-full h-full object-cover z-0"
-        />
+        >
+          <source src="/DEMO2768.mp4" type="video/mp4" />
+        </video>
 
-        {/* 🔴 Manual Play Button (if autoplay blocked) */}
-        {showPlayButton && (
+        {/* 🔴 Custom Play Button (for Low Power Mode) */}
+        {isPaused && (
           <button
             onClick={handleManualPlay}
-            className="fixed bottom-4 z-20 px-6 py-3 bg-red-600 text-[#fdf5e6] rounded-full font-bold shadow-xl animate-bounce"
+            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-20 bg-red-300 text-white px-5 py-3 rounded-full text-lg font-bold shadow-lg backdrop-blur-md hover:scale-105 transition"
           >
-            ▶ Play Background
+            ▶ PLAY
           </button>
         )}
 
