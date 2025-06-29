@@ -9,7 +9,7 @@ export default function Home() {
   const [currentFrame, setCurrentFrame] = useState(0)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const totalFrames = 300 // 🔁 Match your exact number of frames here
+  const totalFrames = 1954
   const fps = 30
 
   const toggleDropdown = () => setShowMusicDropdown(!showMusicDropdown)
@@ -28,8 +28,8 @@ export default function Home() {
   }, [])
 
   const getFrameSrc = (frame: number) => {
-    const padded = frame.toString().padStart(4, '0')
-    return `/frames/frame_${padded}.jpg` // ✅ Use underscore to match your filenames
+    const padded = frame.toString().padStart(4, '4') // frame_0001.jpg
+    return `/frames/frame_${padded}.jpg`
   }
 
   const buttons = [
