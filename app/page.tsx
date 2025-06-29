@@ -7,10 +7,9 @@ export default function Home() {
   const [showMusicDropdown, setShowMusicDropdown] = useState(false)
   const [dropdownHeight, setDropdownHeight] = useState(0)
   const [currentFrame, setCurrentFrame] = useState(0)
-  const [imageError, setImageError] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const totalFrames = 300
+  const totalFrames = 300 // 🔁 Match your exact number of frames here
   const fps = 30
 
   const toggleDropdown = () => setShowMusicDropdown(!showMusicDropdown)
@@ -25,21 +24,13 @@ export default function Home() {
     const interval = setInterval(() => {
       setCurrentFrame((prev) => (prev + 1) % totalFrames)
     }, 1000 / fps)
-
     return () => clearInterval(interval)
   }, [])
 
-  const padFrame = (num: number) => num.toString().padStart(4, '0')
-  const getFrameSrc = (frame: number) => `/frames/frame${padFrame(frame)}.jpg`
-
-  const preloadNextImage = () => {
-    const next = new Image()
-    next.src = getFrameSrc((currentFrame + 1) % totalFrames)
+  const getFrameSrc = (frame: number) => {
+    const padded = frame.toString().padStart(4, '0')
+    return `/frames/frame_${padded}.jpg` // ✅ Use underscore to match your filenames
   }
-
-  useEffect(() => {
-    preloadNextImage()
-  }, [currentFrame])
 
   const buttons = [
     { label: 'VIDEOS', href: 'https://www.youtube.com/@julianmunyard4802' },
@@ -56,22 +47,14 @@ export default function Home() {
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </Head>
 
-      <main className="relative w-full min-h-[100lvh] font-mono overflow-x-hidden">
-        {/* 🔁 Frame Sequence Background */}
+      <main className="relative w-full min-h-[100lvh] font-mono overflow-x-hidden bg-black">
+        {/* 🔁 Background Frame Animation */}
         <img
           src={getFrameSrc(currentFrame)}
           alt=""
           className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none select-none"
-          onError={() => setImageError(true)}
           draggable={false}
         />
-
-        {/* Optional fallback display */}
-        {imageError && (
-          <div className="fixed inset-0 z-0 flex items-center justify-center bg-black text-white text-xl">
-            ⚠️ Failed to load background animation.
-          </div>
-        )}
 
         {/* 🔴 Foreground Scrollable Content */}
         <div className="relative z-10 flex flex-col items-center justify-center px-6 py-16 min-h-[100lvh] space-y-4">
