@@ -6,9 +6,11 @@ import Head from 'next/head'
 export default function Home() {
   const [showMusicDropdown, setShowMusicDropdown] = useState(false)
   const [dropdownHeight, setDropdownHeight] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
+  const [currentFrame, setCurrentFrame] = useState(0)
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const totalFrames = 300 // 🔁 Adjust this to match your exact number of frames
+  const fps = 30
 
   const toggleDropdown = () => setShowMusicDropdown(!showMusicDropdown)
 
@@ -19,36 +21,15 @@ export default function Home() {
   }, [showMusicDropdown])
 
   useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    const tryPlay = async () => {
-      try {
-        await video.play()
-        setIsPaused(false)
-      } catch {
-        setIsPaused(true)
-      }
-    }
-
-    tryPlay()
-
-    const handlePlay = () => setIsPaused(false)
-    const handlePause = () => setIsPaused(true)
-
-    video.addEventListener('play', handlePlay)
-    video.addEventListener('pause', handlePause)
-
-    return () => {
-      video.removeEventListener('play', handlePlay)
-      video.removeEventListener('pause', handlePause)
-    }
+    const interval = setInterval(() => {
+      setCurrentFrame((prev) => (prev + 1) % totalFrames)
+    }, 1000 / fps)
+    return () => clearInterval(interval)
   }, [])
 
-  const handleManualPlay = () => {
-    const video = videoRef.current
-    if (!video) return
-    video.play().catch(() => setIsPaused(true))
+  const getFrameSrc = (frame: number) => {
+    const padded = frame.toString().padStart(4, '0')
+    return `/frames/frame-${padded}.jpg`
   }
 
   const buttons = [
@@ -67,31 +48,17 @@ export default function Home() {
       </Head>
 
       <main className="relative w-full min-h-[100lvh] font-mono overflow-x-hidden">
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          controls={false}
-          disablePictureInPicture
-          controlsList="nodownload nofullscreen noremoteplayback"
-          className="fixed inset-0 w-full h-full object-cover z-0"
-        >
-          <source src="/DEMO2768.mp4" type="video/mp4" />
-        </video>
+        {/* 🔁 Background Frame Animation */}
+        <img
+          src={getFrameSrc(currentFrame)}
+          alt=""
+          className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none select-none"
+          draggable={false}
+        />
 
-        {isPaused && (
-          <button
-            onClick={handleManualPlay}
-            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-20 bg-red-600 text-white px-5 py-3 rounded-full text-lg font-bold shadow-md backdrop-blur-sm hover:scale-105 transition"
-          >
-            ▶ PLAY
-          </button>
-        )}
-
+        {/* 🔴 Foreground Scrollable Content */}
         <div className="relative z-10 flex flex-col items-center justify-center px-6 py-16 min-h-[100lvh] space-y-4">
+          {/* MUSIC BUTTON + DROPDOWN */}
           <div className="w-full max-w-xs">
             <button
               onClick={toggleDropdown}
@@ -128,6 +95,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* OTHER BUTTONS */}
           {buttons.map((btn) => (
             <a
               key={btn.label}
