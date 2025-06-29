@@ -28,7 +28,7 @@ export default function Home() {
   }, [])
 
   const getFrameSrc = (frame: number) => {
-    const padded = frame.toString().padStart(4, '4') // frame_0001.jpg
+    const padded = frame.toString().padStart(4, '0') // ✅ Corrected here
     return `/frames/frame_${padded}.jpg`
   }
 
